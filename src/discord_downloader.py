@@ -24,22 +24,22 @@ class DiscordFileDownloader:
             intents=intents
         )
 
-        self.download_dir = Path(cfg.ROOT_DIR) / "downloads"
+        self.download_dir = Path(cfg.ROOT_DIR) / 'downloads'
         self.download_dir.mkdir(exist_ok=True)
 
     def run(self, channel_id: int) -> None:
         @self.client.event
         async def on_ready():
-            logger.info(f"Logged in as {self.client.user}")
+            logger.info(f'Logged in as {self.client.user}')
 
             channel = self.client.get_channel(channel_id)
             if channel is None:
-                logger.error(f"Channel {channel_id} not found")
+                logger.error(f'Channel {channel_id} not found')
                 await self.client.close()
                 return
 
             if not isinstance(channel, discord.abc.Messageable):
-                logger.error(f"Channel {channel_id} is not messageable (no history)")
+                logger.error(f'Channel {channel_id} is not messageable (no history)')
                 await self.client.close()
                 return
 
@@ -48,7 +48,7 @@ class DiscordFileDownloader:
                 if not (self.start_dt <= msg.created_at <= self.end_dt):
                     continue
 
-                logger.debug(f"Processing message {msg.id} at {msg.created_at} attachments: {msg.attachments}")
+                logger.debug(f'Processing message {msg.id} at {msg.created_at} attachments: {msg.attachments}')
 
                 # --- 添付ファイルフィルタ ---
                 for attachment in msg.attachments:
@@ -57,7 +57,7 @@ class DiscordFileDownloader:
 
                     await self._download_attachment(attachment)
 
-            logger.info("Download completed.")
+            logger.info('Download completed.')
             await self.client.close()
 
         self.client.run(self.token)
@@ -67,12 +67,12 @@ class DiscordFileDownloader:
         return any(lower.endswith(ext.lower()) for ext in self.extensions)
 
     async def _download_attachment(self, attachment: discord.Attachment) -> None:
-        logger.info(f"Downloading {attachment.filename} from {attachment.url}")
+        logger.info(f'Downloading {attachment.filename} from {attachment.url}')
 
         dst = self.download_dir / attachment.filename
 
         res = requests.get(attachment.url, timeout=6)
-        with open(dst, "wb") as f:
+        with open(dst, 'wb') as f:
             f.write(res.content)
 
-        logger.info(f"Saved to {dst}")
+        logger.info(f'Saved to {dst}')

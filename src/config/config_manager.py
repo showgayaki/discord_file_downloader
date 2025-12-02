@@ -15,5 +15,5 @@ class ConfigManager:
     @property
     def config(self) -> Config:
         if self._config is None:
-            raise ValueError("Config has not been initialized")
+            raise ValueError('Config has not been initialized')
         return self._config

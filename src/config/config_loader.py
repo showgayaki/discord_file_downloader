@@ -64,7 +64,7 @@ def _load_timezone() -> ZoneInfo:
     try:
         return ZoneInfo(tz_name)
     except Exception:
-        raise ValueError(f"Invalid timezone name: {tz_name}")
+        raise ValueError(f'Invalid timezone name: {tz_name}')
 
 
 def _parse_datetime(value: str, tz: ZoneInfo) -> datetime:
@@ -79,17 +79,17 @@ def _parse_datetime(value: str, tz: ZoneInfo) -> datetime:
 
     # YYYY-MM-DD（10文字）の場合
     if len(value) == 10 and value.count("-") == 2:
-        dt = datetime.strptime(value, "%Y-%m-%d")
+        dt = datetime.strptime(value, '%Y-%m-%d')
         dt = datetime.combine(dt.date(), time(0, 0, 0))
         dt = dt.replace(tzinfo=tz)
         return dt.astimezone(timezone.utc)
 
     # YYYY-MM-DD HH:MM:SS の場合
     try:
-        dt = datetime.strptime(value, "%Y-%m-%d %H:%M:%S")
+        dt = datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
         dt = dt.replace(tzinfo=tz)
         return dt.astimezone(timezone.utc)
     except ValueError:
         pass
 
-    raise ValueError(f"Invalid datetime format: {value}")
+    raise ValueError(f'Invalid datetime format: {value}')
