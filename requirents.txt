@@ -1,5 +1,5 @@
 dotenv
-requests
+aiohttp
 discord.py
 
 tzdata; platform_system == 'Windows'
