@@ -1,0 +1,2 @@
+# discord_file_downloader
+Discordに添付されたファイルを、期間を指定してダウンロードするやつ
