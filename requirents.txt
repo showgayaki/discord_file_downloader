@@ -1,3 +1,5 @@
 dotenv
 requests
 discord.py
+
+tzdata; platform_system == 'Windows'
