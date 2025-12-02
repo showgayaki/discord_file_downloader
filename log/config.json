@@ -1,0 +1,33 @@
+{
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+        "default": {
+            "format": "%(asctime)s | %(levelname)-8s | %(filename)-10s: %(lineno)-4s | %(message)s"
+        }
+    },
+    "handlers": {
+        "consoleHandler": {
+            "class": "logging.StreamHandler",
+            "level": "DEBUG",
+            "formatter": "default",
+            "stream": "ext://sys.stdout"
+        },
+        "rotatingFileHandler": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "level": "INFO",
+            "formatter": "default",
+            "filename": "log/dfd.log",
+            "encoding": "utf-8",
+            "maxBytes": 10485760,
+            "backupCount": 3
+        }
+    },
+    "root": {
+        "level": "DEBUG",
+        "handlers": [
+            "consoleHandler",
+            "rotatingFileHandler"
+        ]
+    }
+}
