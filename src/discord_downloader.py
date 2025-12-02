@@ -68,7 +68,7 @@ class DiscordFileDownloader:
                 history_async = channel.history(limit=100, before=before)
                 batch = [m async for m in history_async]
             except Exception as e:
-                logger.warning(f"History fetch failed, retrying: {e}")
+                logger.warning(f'History fetch failed, retrying: {e}')
                 await asyncio.sleep(1)
                 continue
 
@@ -85,10 +85,10 @@ class DiscordFileDownloader:
 
             before = discord.Object(id=batch[-1].id)
 
-        logger.info(f"Starting {len(tasks)} downloads...")
+        logger.info(f'Starting {len(tasks)} downloads...')
         await asyncio.gather(*tasks)
 
-        logger.info(f"Download completed: success={self.success}, failed={self.failed}")
+        logger.info(f'Download completed: success={self.success}, failed={self.failed}')
         await self.client.close()
 
     def _match_extension(self, filename: str) -> bool:
@@ -103,7 +103,7 @@ class DiscordFileDownloader:
 
             # 既にダウンロード済みならスキップ
             if dst.exists():
-                logger.debug(f"Skip existing file: {dst}")
+                logger.debug(f'Skip existing file: {dst}')
                 return
 
             for attempt in range(5):
@@ -111,13 +111,13 @@ class DiscordFileDownloader:
                     async with aiohttp.ClientSession() as session:
                         async with session.get(url) as resp:
                             if resp.status == 429:
-                                retry = int(resp.headers.get("Retry-After", 1))
-                                logger.warning(f"Rate limited, retrying in {retry}s...")
+                                retry = int(resp.headers.get('Retry-After', 1))
+                                logger.warning(f'Rate limited, retrying in {retry}s...')
                                 await asyncio.sleep(retry)
                                 continue
 
                             if resp.status != 200:
-                                raise RuntimeError(f"HTTP {resp.status}")
+                                raise RuntimeError(f'HTTP {resp.status}')
 
                             data = await resp.read()
 
@@ -125,7 +125,7 @@ class DiscordFileDownloader:
                     loop = asyncio.get_running_loop()
                     await loop.run_in_executor(None, dst.write_bytes, data)
 
-                    logger.info(f"Saved: {dst}")
+                    logger.info(f'Saved: {dst}')
                     self.success += 1
 
                     # ちょっと待機
@@ -134,10 +134,10 @@ class DiscordFileDownloader:
 
                 except Exception as e:
                     wait = 2 ** attempt
-                    logger.warning(f"Failed downloading {filename} (attempt {attempt + 1}/5): {e}. Retrying in {wait}s...")
+                    logger.warning(f'Failed downloading {filename} (attempt {attempt + 1}/5): {e}. Retrying in {wait}s...')
                     await asyncio.sleep(wait)
 
-            logger.error(f"Giving up: {filename}")
+            logger.error(f'Giving up: {filename}')
             self.failed += 1
             # ちょっと待機
             await asyncio.sleep(1)
