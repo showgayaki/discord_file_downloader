@@ -43,6 +43,11 @@ class DiscordFileDownloader:
                 await self.client.close()
                 return
 
+            # チャンネルごとのダウンロードディレクトリ作成
+            self.download_dir = self.download_dir / channel.name
+            self.download_dir.mkdir(exist_ok=True)
+            logger.info(f'Starting to download files from channel: {channel.name} ({channel.id})')
+
             async for msg in channel.history(limit=None):
                 # --- 期間フィルタ ---
                 if not (self.start_dt <= msg.created_at <= self.end_dt):
